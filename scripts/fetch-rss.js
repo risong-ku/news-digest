@@ -13,6 +13,7 @@ const RSS_FEEDS = [
   { name: '🤖 Towards Data Science', url: 'https://towardsdatascience.com/feed' },
   { name: '🤖 ArXiv (AI)', url: 'https://rss.arxiv.org/rss/cs.ai' },
   { name: '🤖 Hacker News (AI)', url: 'https://hnrss.org/newest?q=AI+LLM&count=10' },
+  { name: '🤖 Papers with Code', url: 'https://rss.paperswithcode.com/newest' },
   { name: '📰 Google News (日本)', url: 'https://news.google.com/rss?gl=JP&hl=ja' },
   { name: '📰 Yahoo!ニュース', url: 'https://news.yahoo.co.jp/rss' },
 ];

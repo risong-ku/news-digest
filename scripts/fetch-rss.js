@@ -60,8 +60,6 @@ export async function fetchRssNews() {
         });
       }
 
-      const isAISource = feed.name.startsWith('🤖');
-      const limit = isAISource ? 3 : 5;
       console.log(`✅ ${feed.name}: ${recentItems.length} articles found (${recentItems.length > limit ? limit + ' included' : 'all included'})`);
     } catch (error) {
       console.error(`❌ Error fetching ${feed.name}: ${error.message}`);

@@ -1,6 +1,11 @@
 import Parser from 'rss-parser';
 
-const parser = new Parser();
+const parser = new Parser({
+  timeout: 5000, // 5秒でタイムアウト
+  customFields: {
+    item: ['content', 'summary'],
+  },
+});
 
 const RSS_FEEDS = [
   { name: '🤖 Dev.to (AI)', url: 'https://dev.to/feed/tag/ai' },
@@ -28,49 +33,63 @@ export async function fetchRssNews() {
   for (const feed of RSS_FEEDS) {
     try {
       console.log(`📡 Fetching RSS: ${feed.name}...`);
-      const result = await parser.parseURL(feed.url);
+      const result = await Promise.race([
+        parser.parseURL(feed.url),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Feed fetch timeout')), 10000)
+        ),
+      ]);
 
-      const recentItems = result.items.filter(item => {
+      // 最大20件まで処理（パフォーマンス向上）
+      const limitedItems = result.items.slice(0, 20);
+      const recentItems = limitedItems.filter(item => {
         const pubDate = new Date(item.pubDate);
         return pubDate >= oneDayAgo;
       });
 
-      for (const item of recentItems) {
+      for (const item of recentItems.slice(0, 5)) {
+        // 最大5件まで通知に含める
         articles.push({
-          title: item.title,
-          summary: item.contentSnippet || item.summary || '',
-          url: item.link,
+          title: item.title || 'No title',
+          summary: (item.contentSnippet || item.summary || '').substring(0, 200), // 最大200文字
+          url: item.link || '',
           source: feed.name,
         });
       }
 
-      console.log(`✅ ${feed.name}: ${recentItems.length} articles found`);
+      console.log(`✅ ${feed.name}: ${recentItems.length} articles found (${recentItems.length > 5 ? '5 included' : 'all included'})`);
     } catch (error) {
       console.error(`❌ Error fetching ${feed.name}: ${error.message}`);
     }
   }
 
-  // Slack チャンネル RSS フィード取得
+  // Slack チャンネル RSS フィード取得（現在は空）
   for (const feed of SLACK_FEEDS) {
     try {
       console.log(`📡 Fetching Slack: ${feed.name}...`);
-      const result = await parser.parseURL(feed.url);
+      const result = await Promise.race([
+        parser.parseURL(feed.url),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Feed fetch timeout')), 10000)
+        ),
+      ]);
 
-      const recentItems = result.items.filter(item => {
+      const limitedItems = result.items.slice(0, 20);
+      const recentItems = limitedItems.filter(item => {
         const pubDate = new Date(item.pubDate);
         return pubDate >= oneDayAgo;
       });
 
-      for (const item of recentItems) {
+      for (const item of recentItems.slice(0, 5)) {
         articles.push({
-          title: item.title,
-          summary: item.contentSnippet || item.summary || '',
-          url: item.link,
+          title: item.title || 'No title',
+          summary: (item.contentSnippet || item.summary || '').substring(0, 200),
+          url: item.link || '',
           source: feed.name,
         });
       }
 
-      console.log(`✅ ${feed.name}: ${recentItems.length} messages found`);
+      console.log(`✅ ${feed.name}: ${recentItems.length} messages found (${recentItems.length > 5 ? '5 included' : 'all included'})`);
     } catch (error) {
       console.error(`❌ Error fetching ${feed.name}: ${error.message}`);
     }

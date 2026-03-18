@@ -3,19 +3,17 @@ import Parser from 'rss-parser';
 const parser = new Parser();
 
 const RSS_FEEDS = [
-  { name: '🤖 ledge.ai', url: 'https://ledge.ai/feed/' },
+  { name: '🤖 Dev.to (AI)', url: 'https://dev.to/feed/tag/ai' },
+  { name: '🤖 Dev.to (Machine Learning)', url: 'https://dev.to/feed/tag/machinelearning' },
+  { name: '🤖 Towards Data Science', url: 'https://towardsdatascience.com/feed' },
+  { name: '🤖 ArXiv (AI)', url: 'https://rss.arxiv.org/rss/cs.ai' },
   { name: '🤖 Hacker News (AI)', url: 'https://hnrss.org/newest?q=AI+LLM&count=10' },
-  { name: '🤖 Product Hunt', url: 'https://www.producthunt.com/feed' },
   { name: '📰 Google News (日本)', url: 'https://news.google.com/rss?gl=JP&hl=ja' },
   { name: '📰 Yahoo!ニュース', url: 'https://news.yahoo.co.jp/rss' },
 ];
 
-const SLACK_FEEDS = [
-  { name: '💬 Slack: matsuokenllmcommunity #06_ai-news', url: 'https://matsuokenllmcommunity.slack.com/feeds/channel/C07AP5J9UJC/latest.rss' },
-  { name: '💬 Slack: matsuokenllmcommunity #07_arxiv_interpreter', url: 'https://matsuokenllmcommunity.slack.com/feeds/channel/C0749LLK8R3/latest.rss' },
-  { name: '💬 Slack: jdlacommunity (C02SC8DRRDG)', url: 'https://jdlacommunity.slack.com/feeds/channel/C02SC8DRRDG/latest.rss' },
-  { name: '💬 Slack: jdlacommunity (C02REH1V7QW)', url: 'https://jdlacommunity.slack.com/feeds/channel/C02REH1V7QW/latest.rss' },
-];
+// Slack チャンネル RSS フィードは現在アクセス不可のため、将来的な改善時に追加予定
+const SLACK_FEEDS = [];
 
 /**
  * RSS フィードから過去24時間のニュース・Slack メッセージを取得

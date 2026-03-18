@@ -27,7 +27,7 @@ const SLACK_FEEDS = [];
 export async function fetchRssNews() {
   const articles = [];
   const now = new Date();
-  const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const twoDaysAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000);
 
   // 一般 RSS フィード取得
   for (const feed of RSS_FEEDS) {
@@ -44,7 +44,7 @@ export async function fetchRssNews() {
       const limitedItems = result.items.slice(0, 20);
       const recentItems = limitedItems.filter(item => {
         const pubDate = new Date(item.pubDate);
-        return pubDate >= oneDayAgo;
+        return pubDate >= twoDaysAgo;
       });
 
       // AI系ニュースは3件、一般ニュースは5件まで
@@ -80,7 +80,7 @@ export async function fetchRssNews() {
       const limitedItems = result.items.slice(0, 20);
       const recentItems = limitedItems.filter(item => {
         const pubDate = new Date(item.pubDate);
-        return pubDate >= oneDayAgo;
+        return pubDate >= twoDaysAgo;
       });
 
       for (const item of recentItems.slice(0, 5)) {

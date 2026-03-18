@@ -1,4 +1,5 @@
 import { fetchRssNews } from './scripts/fetch-rss.js';
+import { fetchLedgeAiNews } from './scripts/fetch-ledge-ai.js';
 import { postToSlack } from './scripts/post-slack.js';
 
 /**
@@ -10,12 +11,18 @@ async function main() {
   const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
 
   try {
-    // 1. RSS ニュース取得（一般ニュース + Slack チャンネル）
-    const articles = await fetchRssNews();
+    // 1. RSS ニュース取得（AI ニュース + 一般ニュース）
+    const rssArticles = await fetchRssNews();
 
-    // 2. Slack に投稿
-    if (articles.length > 0) {
-      await postToSlack(slackWebhookUrl, articles);
+    // 2. ledge.ai ニュース取得（スクレイピング）
+    const ledgeAiArticles = await fetchLedgeAiNews();
+
+    // 3. 全ニュースをマージ
+    const allArticles = [...ledgeAiArticles, ...rssArticles];
+
+    // 4. Slack に投稿
+    if (allArticles.length > 0) {
+      await postToSlack(slackWebhookUrl, allArticles);
     } else {
       console.log('⚠️ No articles found');
     }

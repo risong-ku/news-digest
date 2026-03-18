@@ -47,8 +47,11 @@ export async function fetchRssNews() {
         return pubDate >= oneDayAgo;
       });
 
-      for (const item of recentItems.slice(0, 5)) {
-        // 最大5件まで通知に含める
+      // AI系ニュースは3件、一般ニュースは5件まで
+      const isAISource = feed.name.startsWith('🤖');
+      const limit = isAISource ? 3 : 5;
+
+      for (const item of recentItems.slice(0, limit)) {
         articles.push({
           title: item.title || 'No title',
           summary: (item.contentSnippet || item.summary || '').substring(0, 200), // 最大200文字
@@ -57,7 +60,9 @@ export async function fetchRssNews() {
         });
       }
 
-      console.log(`✅ ${feed.name}: ${recentItems.length} articles found (${recentItems.length > 5 ? '5 included' : 'all included'})`);
+      const isAISource = feed.name.startsWith('🤖');
+      const limit = isAISource ? 3 : 5;
+      console.log(`✅ ${feed.name}: ${recentItems.length} articles found (${recentItems.length > limit ? limit + ' included' : 'all included'})`);
     } catch (error) {
       console.error(`❌ Error fetching ${feed.name}: ${error.message}`);
     }
